@@ -7,7 +7,7 @@ Katana's usage is simple.  It's a single function which takes three arguments: `
 # Templating Syntax
 Katana's syntax is similar to that of Microsoft's Razor for C# or Laravel's Blade for PHP.  Katana, however, focuses on JavaScript.  Here's a quick template to get started:
 
-## katana-view.js
+## katana-demo-view.html
     <div>
       <h1>{{ title }}</h1>
       <p>{{ content }}</h1>
