@@ -7,8 +7,6 @@
 
             var parse = function (input) {
 
-                console.trace();
-
                 input = input.replace(/<!--(?:.*)?-->/g, '');
 
                 var line = 0;
@@ -95,17 +93,23 @@
                 return body.childNodes;
             }
 
-            var nodes = parsePartialHtml(parse(input).expand(model));
-
             // Add nodes to target //
             if (target && typeof target.childNodes === 'object') {
+                var nodes = parsePartialHtml(parse(input).expand(model));
                 while (target.childNodes.length)
                     target.removeChild(target.childNodes[0]);
                 for (var i = 0; i < nodes.length; i++)
                     target.addChild(nodes[i]);
             }
 
-            return nodes;
+            return {
+                nodes: function () {
+                    return parsePartialHtml(parse(input).expand(model))
+                },
+                text: function () {
+                    return parse(input).expand(model);
+                }
+            };
         }
 
         return katana;
