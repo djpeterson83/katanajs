@@ -1,4 +1,4 @@
-# katanajs
+# KatanaJS
 A JavaScript-based HTML templating engine similar to Razor.  It's simple and awesome!
 
 # Usage
