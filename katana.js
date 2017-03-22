@@ -82,8 +82,6 @@
                                     return "\" + (" + untag(cap, '!!') + ") + \""; // Unescaped {{ data }}
                                 else if (isTagged(cap, '--'))
                                     return '';  // Comment {{-- comment --}}
-                                //if (cap.length >= 4 && cap.substr(0, 2) == '!!' && cap.substr(cap.length - 2, 2) == '!!')
-                                    //return "\" + (" + cap.substr(2, cap.length - 4) + ") + \""; // Unescaped {{!! data !!}}
                                 else
                                     return "\" + utility.escape(" + cap + ") + \""; // Escaped {{ data }}
                             });
