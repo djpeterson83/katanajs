@@ -21,6 +21,20 @@
 
                 var statements = [];
 
+                var isTagged = function (text, tag) {
+                    if (typeof text === 'string' && text.length > tag.length * 2)
+                        return text.substr(0, tag.length) == tag && text.substr(text.length - tag.length) == tag;
+                    else
+                        return false;
+                }
+
+                var untag = function(text, tag) {
+                    if (typeof text === 'string' && text.length >= tag.length * 2)
+                        return text.substr(tag.length, text.length - tag.length * 2);
+                    else
+                        return text;
+                }
+
                 var it = 0;
                 while (line < lines.length) {
                     (function (inst) {
@@ -64,8 +78,12 @@
                             inst = inst.replace(/{{(.*?)}}/g, function (text, cap) {
                                 // Revert the escaping since this is an expression //
                                 cap = cap.replace(/\\([\\"])/g, function (text, cap2) { return cap2; });
-                                if (cap.length >= 4 && cap.substr(0, 2) == '!!' && cap.substr(cap.length - 2, 2) == '!!')
-                                    return "\" + (" + cap.substr(2, cap.length - 4) + ") + \""; // Unescaped {{!! data !!}}
+                                if (isTagged(cap, '!!'))
+                                    return "\" + (" + untag(cap, '!!') + ") + \""; // Unescaped {{ data }}
+                                else if (isTagged(cap, '--'))
+                                    return '';  // Comment {{-- comment --}}
+                                //if (cap.length >= 4 && cap.substr(0, 2) == '!!' && cap.substr(cap.length - 2, 2) == '!!')
+                                    //return "\" + (" + cap.substr(2, cap.length - 4) + ") + \""; // Unescaped {{!! data !!}}
                                 else
                                     return "\" + utility.escape(" + cap + ") + \""; // Escaped {{ data }}
                             });
