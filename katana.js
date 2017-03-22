@@ -64,7 +64,10 @@
                             inst = inst.replace(/{{(.*?)}}/g, function (text, cap) {
                                 // Revert the escaping since this is an expression //
                                 cap = cap.replace(/\\([\\"])/g, function (text, cap2) { return cap2; });
-                                return "\" + (" + cap + ") + \"";
+                                if (cap.length >= 4 && cap.substr(0, 2) == '!!' && cap.substr(cap.length - 2, 2) == '!!')
+                                    return "\" + (" + cap.substr(2, cap.length - 4) + ") + \""; // Unescaped {{!! data !!}}
+                                else
+                                    return "\" + utility.escape(" + cap + ") + \""; // Escaped {{ data }}
                             });
                             fb += inst;
                             line++;
@@ -75,13 +78,26 @@
                 fb += "}\n";
                 fb += "return _$t";
 
-                var fn = new Function("data", fb);
+                var fn = new Function("data", "utility", fb);
+
+                var utility = {
+                    escape: function (text) {
+                        return text
+                            .replace(/&/g, '&amp;')
+                            .replace(/"/g, '&quot;')
+                            .replace(/'/g, '&#39;')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;')
+
+                    }
+                };
+
 
                 //console.log(fb);
 
                 return {
                     expand: function (model) {
-                        return fn(model);
+                        return fn(model, utility);
                     }
                 }
             }
